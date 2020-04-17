@@ -1,0 +1,13 @@
+apply plugin: 'java'
+
+group = 'com.dilfer.discord'
+project.version = '1.0'
+project.description = 'Client package for DiscordBotApi'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+dependencies {
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+    compile "com.amazonaws:aws-java-sdk-opensdk:1.11.710"
+}

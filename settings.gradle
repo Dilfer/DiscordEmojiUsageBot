@@ -1,0 +1,5 @@
+rootProject.name = 'DiscordEmojiUsageBot'
+include 'aws-lambda'
+include 'discordBot'
+include 'discordBot:discord4j'
+include 'http-api'
