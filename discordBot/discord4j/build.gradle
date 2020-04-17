@@ -21,7 +21,7 @@ task runLocally(type: JavaExec) {
     group = "Execution"
     description = "Run the main class with JavaExecTask"
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.dilfer.terraria.discord.DiscordBotRunner'
+    main = 'com.dilfer.discord.bot.EmojiBotRunner'
     args = ["${->arg1}", "${->arg2}"]
 }
 
