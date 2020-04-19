@@ -8,7 +8,7 @@ import java.util.List;
 
 public class HelpCommand
 {
-    public static final String CMD_MESSAGE = "!manager help";
+    public static final String CMD_MESSAGE = "!emoji help";
 
     public Mono<Message> run(MessageChannel messageChannel)
     {

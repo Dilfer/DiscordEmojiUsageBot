@@ -1,6 +1,6 @@
 package com.dilfer.discord.bot;
 
-import com.dilfer.discord.*;
+import com.dilfer.discord.DiscordBotApi;
 import com.dilfer.discord.commands.EmojiCommands;
 import com.dilfer.discord.commands.EmojiMessageParser;
 import com.dilfer.discord.commands.HelpCommand;
@@ -48,7 +48,7 @@ public class EmojiBot
     {
         logger.info("Registering all commands.");
         registerHelpCommand();
-        registerEmoteCommands();
+        registerEmojiCommands();
         registerEmoteEventActions();
         loginAndBlockThread(client);
     }
@@ -63,7 +63,7 @@ public class EmojiBot
                 .subscribe();
     }
 
-    private void registerEmoteCommands()
+    private void registerEmojiCommands()
     {
         for (ServerCommand command : EmojiCommands.getEmojiCommands())
         {
@@ -110,7 +110,7 @@ public class EmojiBot
         return message.getAuthor().map(user -> !user.isBot()).orElse(false);
     }
 
-    private static Mono<Message> runCommand(DiscordBotApi discordBotApi, ServerCommand command, Message message)
+    private static Mono<Void> runCommand(DiscordBotApi discordBotApi, ServerCommand command, Message message)
     {
         Guild guild = message.getGuild().block();
 
@@ -119,13 +119,12 @@ public class EmojiBot
             return command.run(message.getChannel().block(),
                     discordBotApi,
                     Objects.requireNonNull(guild),
-                    message.getContent().orElseThrow(throwRuntime()));
+                    message);
         }
         catch (NullPointerException e)
         {
             logger.error("Received a null pointer exception from message : " + message.getContent().orElse("UNKNOWN"));
-            return message.getChannel()
-                    .flatMap(channel -> channel.createMessage("Bot encountered an err0rz and could not retrieve the server/guild name."));
+            return Mono.empty();
         }
     }
 

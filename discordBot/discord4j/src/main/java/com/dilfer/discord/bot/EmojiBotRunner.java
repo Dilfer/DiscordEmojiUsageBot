@@ -23,7 +23,7 @@ public class EmojiBotRunner
         String discordToken = args[0];
         String apiGatewayToken = args[1];
         DiscordClientBuilder builder = new DiscordClientBuilder(discordToken)
-                .setInitialPresence(Presence.online(Activity.playing("!manager help")));
+                .setInitialPresence(Presence.online(Activity.playing("!emoji help")));
         DiscordClient discordClient = builder.build();
         DiscordBotApi discordBotApi = DiscordBotApi.builder().apiKey(apiGatewayToken).build();
         EmojiBot discordBot = new EmojiBot(discordBotApi, discordClient, new EmojiMessageParser());

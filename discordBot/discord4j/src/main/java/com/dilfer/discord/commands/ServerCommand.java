@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ServerCommand
 {
-    Mono<Message> run(MessageChannel messageChannel, DiscordBotApi discordBotApi, Guild guild, String message);
+    Mono<Void> run(MessageChannel messageChannel, DiscordBotApi discordBotApi, Guild guild, Message message);
 
     String getCommandString();
 
