@@ -10,7 +10,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.ReceiveMessageResult;
 import com.amazonaws.util.json.Jackson;
@@ -19,6 +18,7 @@ import com.dilfer.discord.model.UpdateEmojisRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UpdateEmojiStatsRequestHandler implements RequestHandler<UpdateRequestParams, Void>
 {
@@ -49,48 +49,56 @@ public class UpdateEmojiStatsRequestHandler implements RequestHandler<UpdateRequ
         do
         {
             receiveMessageResult = sqsClient.receiveMessage(receiveMessageRequest);
-            List<Message> messages = receiveMessageResult.getMessages();
-            List<EmojiUpdateAggregate> arregateUpdates = getArregateUpdates(messages);
-            arregateUpdates.forEach(emojiUpdateAggregate -> updateDynamo(emojiUpdateAggregate, input.getDynamoTableName()));
-            //messages.forEach(message -> sqsClient.deleteMessage(input.getSqsUrl(), message.getReceiptHandle()));
+            List<EmojiUpdate> emojiUpdates = receiveMessageResult.getMessages()
+                    .stream()
+                    .map(message -> Jackson.fromJsonString(message.getBody(), UpdateEmojisRequest.class))
+                    .map(UpdateEmojisRequest::getEmojiUpdates)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+
+            Map<String, List<EmojiUpdate>> emojiUpdatesByDiscordUser = emojiUpdates.stream()
+                    .collect(Collectors.groupingBy(EmojiUpdate::getDiscordUser));
+
+            List<UpdateItemRequest> updateItemRequests = emojiUpdatesByDiscordUser
+                    .entrySet()
+                    .stream()
+                    .map(entry -> getUpdateItemRequests(entry, input.getDynamoTableName()))
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+
+            updateItemRequests.forEach(dynamoDB::updateItem);
+            receiveMessageResult.getMessages().forEach(message -> sqsClient.deleteMessage(input.getSqsUrl(), message.getReceiptHandle()));
         }
         while (!receiveMessageResult.getMessages().isEmpty());
 
         return null;
     }
 
-    //This tries to aggregate a bunch of data in Java memory to avoid too many Dynamo UpdateItem API actions. May be over engineering.
-    private List<EmojiUpdateAggregate> getArregateUpdates(List<Message> sqsMessages)
+
+    private List<UpdateItemRequest> getUpdateItemRequests(Map.Entry<String, List<EmojiUpdate>> emojiUpdatesByUser, String dynamoTableName)
     {
-        Map<String, List<EmojiUpdate>> emojiUpdatesMap = sqsMessages
-                .stream()
-                .map(message -> Jackson.fromJsonString(message.getBody(), UpdateEmojisRequest.class))
-                .map(UpdateEmojisRequest::getEmojiUpdates)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(EmojiUpdate::getEmojiTextKey, Collectors.toList()));
+        Map<String, AttributeValueUpdate> attributeValueUpdateMap = getAttributeValueUpdateMap(emojiUpdatesByUser.getValue());
 
-        return emojiUpdatesMap.entrySet().stream().map(entry ->
-        {
-            Map<String, Integer> userUsage = entry.getValue()
-                    .stream()
-                    .collect(Collectors.groupingBy(EmojiUpdate::getDiscordUser,
-                            Collectors.mapping(EmojiUpdate::getUsageCount, Collectors.summingInt(usageCount -> usageCount))));
-            int usageTotal = userUsage.values().stream().mapToInt(i -> i).sum();
-            return new EmojiUpdateAggregate(entry.getKey(), usageTotal, userUsage);
-        }).collect(Collectors.toList());
-    }
-
-    private void updateDynamo(EmojiUpdateAggregate emojiUpdateAggregate, String dynamoTableName)
-    {
-        Map<String, AttributeValueUpdate> attributeValueUpdateMap = new HashMap<>();
-        attributeValueUpdateMap.put("usageCount", new AttributeValueUpdate(new AttributeValue().withN(Integer.toString(emojiUpdateAggregate.getUsageCount())), AttributeAction.ADD));
-
-        emojiUpdateAggregate.getUserMap().forEach((key, value) -> attributeValueUpdateMap.put(String.format("usageCount_%s", key), new AttributeValueUpdate(new AttributeValue().withN(value.toString()), AttributeAction.ADD)));
-
-        UpdateItemRequest updateItemRequest = new UpdateItemRequest(dynamoTableName,
-                Collections.singletonMap("emoji_text", new AttributeValue(emojiUpdateAggregate.getEmojiKey())),
+        UpdateItemRequest userUpdateItemRequest = new UpdateItemRequest(dynamoTableName,
+                Collections.singletonMap("discordUser", new AttributeValue(emojiUpdatesByUser.getKey().toLowerCase())),
                 attributeValueUpdateMap);
 
-        dynamoDB.updateItem(updateItemRequest);
+        UpdateItemRequest globalItemRequest = new UpdateItemRequest(dynamoTableName,
+                Collections.singletonMap("discordUser", new AttributeValue("global")),
+                attributeValueUpdateMap);
+
+        return Stream.of(userUpdateItemRequest, globalItemRequest).collect(Collectors.toList());
+    }
+
+    private Map<String, AttributeValueUpdate> getAttributeValueUpdateMap(List<EmojiUpdate> value)
+    {
+        Map<String, Integer> emojiKeysSummedUp = value.stream()
+                .collect(Collectors.groupingBy(EmojiUpdate::getEmojiTextKey,
+                        Collectors.mapping(EmojiUpdate::getUsageCount, Collectors.summingInt(usageCount -> usageCount))));
+
+        return emojiKeysSummedUp.entrySet()
+                .stream()
+                .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), new AttributeValueUpdate(new AttributeValue().withN(Integer.toString(entry.getValue())), AttributeAction.ADD)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
