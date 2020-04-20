@@ -19,7 +19,7 @@ public class AbstractDiscordBotApi implements DiscordBotApi {
     }
 
     @Override
-    public GetEmojiReportResult getEmojiReport(GetEmojiReportRequest request) {
+    public GetEmojiReportUsernameResult getEmojiReportUsername(GetEmojiReportUsernameRequest request) {
         throw new java.lang.UnsupportedOperationException();
     }
 

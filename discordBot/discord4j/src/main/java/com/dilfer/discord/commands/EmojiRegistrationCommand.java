@@ -4,12 +4,10 @@ import com.dilfer.discord.DiscordBotApi;
 import com.dilfer.discord.model.EmojiUpdate;
 import com.dilfer.discord.model.PostEmojiUpdateRequest;
 import com.dilfer.discord.model.UpdateEmojisRequest;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.GuildEmoji;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.MessageChannel;
+import discord4j.core.object.entity.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,15 +34,23 @@ public class EmojiRegistrationCommand implements ServerCommand
                 .filter(emoji -> !emoji.isAnimated())
                 .collect(Collectors.toList());
 
-        List<EmojiUpdate> emojiRegistrationUpdates = guildEmojis.stream()
-                .map(guildEmoji -> new EmojiUpdate()
-                        .emojiTextKey(String.format(":%s:", guildEmoji.getName()))
-                        .usageCount(0)
-                        .discordUser(message.getAuthor().orElseThrow(() -> new RuntimeException("Couldnt get message author")).getUsername()))
+        List<String> userNames = Objects.requireNonNull(guild.getMembers().collectList().block()).stream()
+                .map(Member::getUsername)
+                .collect(Collectors.toList());
+
+        List<EmojiUpdate> emojiUpdatesForAllUsers = userNames.stream()
+                .map(username ->
+                        guildEmojis.stream()
+                                .map(guildEmoji -> new EmojiUpdate()
+                                        .emojiTextKey(String.format(":%s:", guildEmoji.getName()))
+                                        .usageCount(0)
+                                        .discordUser(username))
+                                .collect(Collectors.toList()))
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
         discordBotApi.postEmojiUpdate(new PostEmojiUpdateRequest()
-                .updateEmojisRequest(new UpdateEmojisRequest().emojiUpdates(emojiRegistrationUpdates))
+                .updateEmojisRequest(new UpdateEmojisRequest().emojiUpdates(emojiUpdatesForAllUsers))
                 .messageDeduplicationId(UUID.randomUUID().toString())
                 .messageGroupId(UUID.randomUUID().toString()));
 

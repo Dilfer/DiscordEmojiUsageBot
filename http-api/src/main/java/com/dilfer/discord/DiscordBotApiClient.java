@@ -67,29 +67,29 @@ class DiscordBotApiClient implements DiscordBotApi {
     }
 
     /**
-     * @param getEmojiReportRequest
-     * @return Result of the GetEmojiReport operation returned by the service.
-     * @sample DiscordBotApi.GetEmojiReport
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/GetEmojiReport"
+     * @param getEmojiReportUsernameRequest
+     * @return Result of the GetEmojiReportUsername operation returned by the service.
+     * @sample DiscordBotApi.GetEmojiReportUsername
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetEmojiReportUsername"
      *      target="_top">AWS API Documentation</a>
      */
     @Override
-    public GetEmojiReportResult getEmojiReport(GetEmojiReportRequest getEmojiReportRequest) {
-        HttpResponseHandler<GetEmojiReportResult> responseHandler = protocolFactory.createResponseHandler(new JsonOperationMetadata().withPayloadJson(true)
-                .withHasStreamingSuccessResponse(false), new GetEmojiReportResultJsonUnmarshaller());
+    public GetEmojiReportUsernameResult getEmojiReportUsername(GetEmojiReportUsernameRequest getEmojiReportUsernameRequest) {
+        HttpResponseHandler<GetEmojiReportUsernameResult> responseHandler = protocolFactory.createResponseHandler(
+                new JsonOperationMetadata().withPayloadJson(true).withHasStreamingSuccessResponse(false), new GetEmojiReportUsernameResultJsonUnmarshaller());
 
         HttpResponseHandler<SdkBaseException> errorResponseHandler = createErrorResponseHandler();
 
-        return clientHandler.execute(new ClientExecutionParams<GetEmojiReportRequest, GetEmojiReportResult>()
-                .withMarshaller(new GetEmojiReportRequestProtocolMarshaller(protocolFactory)).withResponseHandler(responseHandler)
-                .withErrorResponseHandler(errorResponseHandler).withInput(getEmojiReportRequest));
+        return clientHandler.execute(new ClientExecutionParams<GetEmojiReportUsernameRequest, GetEmojiReportUsernameResult>()
+                .withMarshaller(new GetEmojiReportUsernameRequestProtocolMarshaller(protocolFactory)).withResponseHandler(responseHandler)
+                .withErrorResponseHandler(errorResponseHandler).withInput(getEmojiReportUsernameRequest));
     }
 
     /**
      * @param getServermanagerListgamesRequest
      * @return Result of the GetServermanagerListgames operation returned by the service.
      * @sample DiscordBotApi.GetServermanagerListgames
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/GetServermanagerListgames"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetServermanagerListgames"
      *      target="_top">AWS API Documentation</a>
      */
     @Override
@@ -108,7 +108,7 @@ class DiscordBotApiClient implements DiscordBotApi {
      * @param postEmojiUpdateRequest
      * @return Result of the PostEmojiUpdate operation returned by the service.
      * @sample DiscordBotApi.PostEmojiUpdate
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostEmojiUpdate"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostEmojiUpdate"
      *      target="_top">AWS API Documentation</a>
      */
     @Override
@@ -127,7 +127,7 @@ class DiscordBotApiClient implements DiscordBotApi {
      * @param postServermanagerInfoRequest
      * @return Result of the PostServermanagerInfo operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerInfo
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerInfo"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerInfo"
      *      target="_top">AWS API Documentation</a>
      */
     @Override
@@ -146,7 +146,7 @@ class DiscordBotApiClient implements DiscordBotApi {
      * @param postServermanagerStartRequest
      * @return Result of the PostServermanagerStart operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerStart
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerStart"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerStart"
      *      target="_top">AWS API Documentation</a>
      */
     @Override
@@ -165,7 +165,7 @@ class DiscordBotApiClient implements DiscordBotApi {
      * @param postServermanagerStopRequest
      * @return Result of the PostServermanagerStop operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerStop
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerStop"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerStop"
      *      target="_top">AWS API Documentation</a>
      */
     @Override

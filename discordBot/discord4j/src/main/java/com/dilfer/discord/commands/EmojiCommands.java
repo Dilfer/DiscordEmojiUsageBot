@@ -7,7 +7,7 @@ public enum EmojiCommands
 {
     register(new EmojiRegistrationCommand("!emoji register", "Registers all guild emojis in the table with an initial count of 0. No harm running multiple times.", Collections.emptyList())),
     report(new EmojiReportCommand("!emoji report", "Returns a list of emoji usage for either a " +
-            "specific user or global. Use 'me' for yourself, 'global' for server wide. Nicknames do not work.",
+            "specific user or global. Use 'me' for yourself, 'global' for server wide, a persons server nickname or discord user name. Not case sensitive.",
             Collections.singletonList("user")));
 
     private final ServerCommand serverCommand;

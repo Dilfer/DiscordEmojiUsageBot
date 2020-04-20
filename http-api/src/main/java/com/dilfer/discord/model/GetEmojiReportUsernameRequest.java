@@ -8,37 +8,37 @@ import javax.annotation.Generated;
 
 /**
  * 
- * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerStart"
+ * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetEmojiReportUsername"
  *      target="_top">AWS API Documentation</a>
  */
 @Generated("com.amazonaws:aws-java-sdk-code-generator")
-public class PostServermanagerStartRequest extends com.amazonaws.opensdk.BaseRequest implements Serializable, Cloneable {
+public class GetEmojiReportUsernameRequest extends com.amazonaws.opensdk.BaseRequest implements Serializable, Cloneable {
 
-    private StartServerRequest startServerRequest;
+    private String username;
 
     /**
-     * @param startServerRequest
+     * @param username
      */
 
-    public void setStartServerRequest(StartServerRequest startServerRequest) {
-        this.startServerRequest = startServerRequest;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
      * @return
      */
 
-    public StartServerRequest getStartServerRequest() {
-        return this.startServerRequest;
+    public String getUsername() {
+        return this.username;
     }
 
     /**
-     * @param startServerRequest
+     * @param username
      * @return Returns a reference to this object so that method calls can be chained together.
      */
 
-    public PostServermanagerStartRequest startServerRequest(StartServerRequest startServerRequest) {
-        setStartServerRequest(startServerRequest);
+    public GetEmojiReportUsernameRequest username(String username) {
+        setUsername(username);
         return this;
     }
 
@@ -54,8 +54,8 @@ public class PostServermanagerStartRequest extends com.amazonaws.opensdk.BaseReq
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        if (getStartServerRequest() != null)
-            sb.append("StartServerRequest: ").append(getStartServerRequest());
+        if (getUsername() != null)
+            sb.append("Username: ").append(getUsername());
         sb.append("}");
         return sb.toString();
     }
@@ -67,12 +67,12 @@ public class PostServermanagerStartRequest extends com.amazonaws.opensdk.BaseReq
         if (obj == null)
             return false;
 
-        if (obj instanceof PostServermanagerStartRequest == false)
+        if (obj instanceof GetEmojiReportUsernameRequest == false)
             return false;
-        PostServermanagerStartRequest other = (PostServermanagerStartRequest) obj;
-        if (other.getStartServerRequest() == null ^ this.getStartServerRequest() == null)
+        GetEmojiReportUsernameRequest other = (GetEmojiReportUsernameRequest) obj;
+        if (other.getUsername() == null ^ this.getUsername() == null)
             return false;
-        if (other.getStartServerRequest() != null && other.getStartServerRequest().equals(this.getStartServerRequest()) == false)
+        if (other.getUsername() != null && other.getUsername().equals(this.getUsername()) == false)
             return false;
         return true;
     }
@@ -82,13 +82,13 @@ public class PostServermanagerStartRequest extends com.amazonaws.opensdk.BaseReq
         final int prime = 31;
         int hashCode = 1;
 
-        hashCode = prime * hashCode + ((getStartServerRequest() == null) ? 0 : getStartServerRequest().hashCode());
+        hashCode = prime * hashCode + ((getUsername() == null) ? 0 : getUsername().hashCode());
         return hashCode;
     }
 
     @Override
-    public PostServermanagerStartRequest clone() {
-        return (PostServermanagerStartRequest) super.clone();
+    public GetEmojiReportUsernameRequest clone() {
+        return (GetEmojiReportUsernameRequest) super.clone();
     }
 
     /**
@@ -98,7 +98,7 @@ public class PostServermanagerStartRequest extends com.amazonaws.opensdk.BaseReq
      *        Request configuration.
      * @return This object for method chaining.
      */
-    public PostServermanagerStartRequest sdkRequestConfig(com.amazonaws.opensdk.SdkRequestConfig sdkRequestConfig) {
+    public GetEmojiReportUsernameRequest sdkRequestConfig(com.amazonaws.opensdk.SdkRequestConfig sdkRequestConfig) {
         super.sdkRequestConfig(sdkRequestConfig);
         return this;
     }

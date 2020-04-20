@@ -8,11 +8,11 @@ import javax.annotation.Generated;
 
 /**
  * 
- * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/GetEmojiReport"
+ * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetEmojiReportUsername"
  *      target="_top">AWS API Documentation</a>
  */
 @Generated("com.amazonaws:aws-java-sdk-code-generator")
-public class GetEmojiReportResult extends com.amazonaws.opensdk.BaseResult implements Serializable, Cloneable {
+public class GetEmojiReportUsernameResult extends com.amazonaws.opensdk.BaseResult implements Serializable, Cloneable {
 
     private EmojiReportResponse emojiReportResponse;
 
@@ -37,7 +37,7 @@ public class GetEmojiReportResult extends com.amazonaws.opensdk.BaseResult imple
      * @return Returns a reference to this object so that method calls can be chained together.
      */
 
-    public GetEmojiReportResult emojiReportResponse(EmojiReportResponse emojiReportResponse) {
+    public GetEmojiReportUsernameResult emojiReportResponse(EmojiReportResponse emojiReportResponse) {
         setEmojiReportResponse(emojiReportResponse);
         return this;
     }
@@ -67,9 +67,9 @@ public class GetEmojiReportResult extends com.amazonaws.opensdk.BaseResult imple
         if (obj == null)
             return false;
 
-        if (obj instanceof GetEmojiReportResult == false)
+        if (obj instanceof GetEmojiReportUsernameResult == false)
             return false;
-        GetEmojiReportResult other = (GetEmojiReportResult) obj;
+        GetEmojiReportUsernameResult other = (GetEmojiReportUsernameResult) obj;
         if (other.getEmojiReportResponse() == null ^ this.getEmojiReportResponse() == null)
             return false;
         if (other.getEmojiReportResponse() != null && other.getEmojiReportResponse().equals(this.getEmojiReportResponse()) == false)
@@ -87,9 +87,9 @@ public class GetEmojiReportResult extends com.amazonaws.opensdk.BaseResult imple
     }
 
     @Override
-    public GetEmojiReportResult clone() {
+    public GetEmojiReportUsernameResult clone() {
         try {
-            return (GetEmojiReportResult) super.clone();
+            return (GetEmojiReportUsernameResult) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new IllegalStateException("Got a CloneNotSupportedException from Object.clone() " + "even though we're Cloneable!", e);
         }

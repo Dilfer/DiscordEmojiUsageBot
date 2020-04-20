@@ -15,13 +15,13 @@ import com.fasterxml.jackson.core.JsonToken;
 import static com.fasterxml.jackson.core.JsonToken.*;
 
 /**
- * GetEmojiReportResult JSON Unmarshaller
+ * GetEmojiReportUsernameResult JSON Unmarshaller
  */
 @Generated("com.amazonaws:aws-java-sdk-code-generator")
-public class GetEmojiReportResultJsonUnmarshaller implements Unmarshaller<GetEmojiReportResult, JsonUnmarshallerContext> {
+public class GetEmojiReportUsernameResultJsonUnmarshaller implements Unmarshaller<GetEmojiReportUsernameResult, JsonUnmarshallerContext> {
 
-    public GetEmojiReportResult unmarshall(JsonUnmarshallerContext context) throws Exception {
-        GetEmojiReportResult getEmojiReportResult = new GetEmojiReportResult();
+    public GetEmojiReportUsernameResult unmarshall(JsonUnmarshallerContext context) throws Exception {
+        GetEmojiReportUsernameResult getEmojiReportUsernameResult = new GetEmojiReportUsernameResult();
 
         int originalDepth = context.getCurrentDepth();
         String currentParentElement = context.getCurrentParentElement();
@@ -31,25 +31,25 @@ public class GetEmojiReportResultJsonUnmarshaller implements Unmarshaller<GetEmo
         if (token == null)
             token = context.nextToken();
         if (token == VALUE_NULL) {
-            return getEmojiReportResult;
+            return getEmojiReportUsernameResult;
         }
 
         while (true) {
             if (token == null)
                 break;
 
-            getEmojiReportResult.setEmojiReportResponse(EmojiReportResponseJsonUnmarshaller.getInstance().unmarshall(context));
+            getEmojiReportUsernameResult.setEmojiReportResponse(EmojiReportResponseJsonUnmarshaller.getInstance().unmarshall(context));
             token = context.nextToken();
         }
 
-        return getEmojiReportResult;
+        return getEmojiReportUsernameResult;
     }
 
-    private static GetEmojiReportResultJsonUnmarshaller instance;
+    private static GetEmojiReportUsernameResultJsonUnmarshaller instance;
 
-    public static GetEmojiReportResultJsonUnmarshaller getInstance() {
+    public static GetEmojiReportUsernameResultJsonUnmarshaller getInstance() {
         if (instance == null)
-            instance = new GetEmojiReportResultJsonUnmarshaller();
+            instance = new GetEmojiReportUsernameResultJsonUnmarshaller();
         return instance;
     }
 }

@@ -19,19 +19,19 @@ import com.dilfer.discord.model.*;
 public interface DiscordBotApi {
 
     /**
-     * @param getEmojiReportRequest
-     * @return Result of the GetEmojiReport operation returned by the service.
-     * @sample DiscordBotApi.GetEmojiReport
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/GetEmojiReport"
+     * @param getEmojiReportUsernameRequest
+     * @return Result of the GetEmojiReportUsername operation returned by the service.
+     * @sample DiscordBotApi.GetEmojiReportUsername
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetEmojiReportUsername"
      *      target="_top">AWS API Documentation</a>
      */
-    GetEmojiReportResult getEmojiReport(GetEmojiReportRequest getEmojiReportRequest);
+    GetEmojiReportUsernameResult getEmojiReportUsername(GetEmojiReportUsernameRequest getEmojiReportUsernameRequest);
 
     /**
      * @param getServermanagerListgamesRequest
      * @return Result of the GetServermanagerListgames operation returned by the service.
      * @sample DiscordBotApi.GetServermanagerListgames
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/GetServermanagerListgames"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/GetServermanagerListgames"
      *      target="_top">AWS API Documentation</a>
      */
     GetServermanagerListgamesResult getServermanagerListgames(GetServermanagerListgamesRequest getServermanagerListgamesRequest);
@@ -40,7 +40,7 @@ public interface DiscordBotApi {
      * @param postEmojiUpdateRequest
      * @return Result of the PostEmojiUpdate operation returned by the service.
      * @sample DiscordBotApi.PostEmojiUpdate
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostEmojiUpdate"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostEmojiUpdate"
      *      target="_top">AWS API Documentation</a>
      */
     PostEmojiUpdateResult postEmojiUpdate(PostEmojiUpdateRequest postEmojiUpdateRequest);
@@ -49,7 +49,7 @@ public interface DiscordBotApi {
      * @param postServermanagerInfoRequest
      * @return Result of the PostServermanagerInfo operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerInfo
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerInfo"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerInfo"
      *      target="_top">AWS API Documentation</a>
      */
     PostServermanagerInfoResult postServermanagerInfo(PostServermanagerInfoRequest postServermanagerInfoRequest);
@@ -58,7 +58,7 @@ public interface DiscordBotApi {
      * @param postServermanagerStartRequest
      * @return Result of the PostServermanagerStart operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerStart
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerStart"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerStart"
      *      target="_top">AWS API Documentation</a>
      */
     PostServermanagerStartResult postServermanagerStart(PostServermanagerStartRequest postServermanagerStartRequest);
@@ -67,7 +67,7 @@ public interface DiscordBotApi {
      * @param postServermanagerStopRequest
      * @return Result of the PostServermanagerStop operation returned by the service.
      * @sample DiscordBotApi.PostServermanagerStop
-     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-14T21:58:16Z/PostServermanagerStop"
+     * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/ra6ngodkx3-2020-04-20T22:22:57Z/PostServermanagerStop"
      *      target="_top">AWS API Documentation</a>
      */
     PostServermanagerStopResult postServermanagerStop(PostServermanagerStopRequest postServermanagerStopRequest);
