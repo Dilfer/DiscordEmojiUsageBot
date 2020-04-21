@@ -2,7 +2,6 @@ package com.dilfer.discord.commands;
 
 import com.dilfer.discord.DiscordBotApi;
 import com.dilfer.discord.model.EmojiStats;
-import com.dilfer.discord.model.Empty;
 import com.dilfer.discord.model.GetEmojiReportUsernameRequest;
 import com.dilfer.discord.model.GetEmojiReportUsernameResult;
 import com.google.common.collect.Lists;
@@ -31,66 +30,80 @@ class EmojiReportCommand implements ServerCommand
     @Override
     public Mono<Void> run(MessageChannel messageChannel, DiscordBotApi discordBotApi, Guild guild, Message message)
     {
-        String messageContents = message.getContent().orElse("");
-        List<String> arguments = ArgumentValidator.getArguments(this, messageContents);
-        String submittedUser = arguments.iterator().next();
-
-        String userToUseForReportRequest = determineProperUser(submittedUser, message, guild);
-
-        GetEmojiReportUsernameRequest emojiReportUsernameRequest = new GetEmojiReportUsernameRequest()
-                .username(userToUseForReportRequest);
-        GetEmojiReportUsernameResult emojiReport = discordBotApi.getEmojiReportUsername(emojiReportUsernameRequest);
-
-        Map<String, GuildEmoji> guildEmojis = Objects.requireNonNull(guild.getEmojis().collectList().block())
-                .stream()
-                .filter(emoji -> !emoji.isAnimated())
-                .collect(Collectors.toMap(guildEmoji -> ":" + guildEmoji.getName() + ":", guildEmoji -> guildEmoji));
-
-        Map<Integer, List<String>> emojiListByCount = emojiReport.getEmojiReportResponse().getEmojiStats().stream()
-                .filter(emojiStat -> guildEmojis.containsKey(emojiStat.getEmojiTextKey()))
-                .sorted(Comparator.comparing(EmojiStats::getUsageCount, Comparator.reverseOrder()))
-                .filter(stat -> guildEmojis.containsKey(stat.getEmojiTextKey()))
-                .collect(Collectors.groupingBy(EmojiStats::getUsageCount,
-                        Collectors.mapping(emojiStat -> convertToDiscordFriendlyStringWithSnowflake(guildEmojis.get(emojiStat.getEmojiTextKey()), emojiStat),
-                                Collectors.toList())));
-
-        List<String> reportLines = emojiListByCount.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
-                .map(this::convertEntrySetToHumanReadableLine)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        if (!reportLines.isEmpty())
+        try
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Emoji Report for ")
-                    .append(userToUseForReportRequest)
-                    .append("\n")
-                    .append("\n");
+            String messageContents = message.getContent().orElse("");
+            String submittedUser = messageContents.replace(commandString, "").trim();
 
-            for (int i = 0; i < reportLines.size(); i++)
+            String userToUseForReportRequest = determineProperUser(submittedUser, message, guild);
+
+            if ("unknown".equalsIgnoreCase(userToUseForReportRequest))
             {
-                String reportLine = reportLines.get(i);
-                stringBuilder.append(reportLine);
+                messageChannel.createMessage("Invalid input. Did not like argument " + submittedUser).subscribe();
+                return Mono.empty();
+            }
 
-                if (i + 1 < reportLines.size())
-                {
-                    if (stringBuilder.length() + reportLines.get(i + 1).length() > 2000)
-                    {
-                        messageChannel.createMessage(stringBuilder.toString()).subscribe();
-                        stringBuilder = new StringBuilder();
-                        stringBuilder.append("Report continued:");
-                        stringBuilder.append("\n")
+            GetEmojiReportUsernameRequest emojiReportUsernameRequest = new GetEmojiReportUsernameRequest()
+                    .username(userToUseForReportRequest);
+            GetEmojiReportUsernameResult emojiReport = discordBotApi.getEmojiReportUsername(emojiReportUsernameRequest);
+
+            Map<String, GuildEmoji> guildEmojis = Objects.requireNonNull(guild.getEmojis().collectList().block())
+                    .stream()
+                    .filter(emoji -> !emoji.isAnimated())
+                    .collect(Collectors.toMap(guildEmoji -> ":" + guildEmoji.getName() + ":", guildEmoji -> guildEmoji));
+
+            Map<Integer, List<String>> emojiListByCount = emojiReport.getEmojiReportResponse().getEmojiStats().stream()
+                    .filter(emojiStat -> guildEmojis.containsKey(emojiStat.getEmojiTextKey()))
+                    .sorted(Comparator.comparing(EmojiStats::getUsageCount, Comparator.reverseOrder()))
+                    .filter(stat -> guildEmojis.containsKey(stat.getEmojiTextKey()))
+                    .filter(emojiStat -> "global".equalsIgnoreCase(userToUseForReportRequest) || emojiStat.getUsageCount() > 0)
+                    .collect(Collectors.groupingBy(EmojiStats::getUsageCount,
+                            Collectors.mapping(emojiStat -> convertToDiscordFriendlyStringWithSnowflake(guildEmojis.get(emojiStat.getEmojiTextKey()), emojiStat),
+                                    Collectors.toList())));
+
+            List<String> reportLines = emojiListByCount.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
+                    .map(this::convertEntrySetToHumanReadableLine)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+
+            if (!reportLines.isEmpty())
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Emoji Report for ")
+                        .append(userToUseForReportRequest)
+                        .append("\n")
                         .append("\n");
+
+                for (int i = 0; i < reportLines.size(); i++)
+                {
+                    String reportLine = reportLines.get(i);
+                    stringBuilder.append(reportLine);
+
+                    if (i + 1 < reportLines.size())
+                    {
+                        if (stringBuilder.length() + reportLines.get(i + 1).length() > 2000)
+                        {
+                            messageChannel.createMessage(stringBuilder.toString()).subscribe();
+                            stringBuilder = new StringBuilder();
+                            stringBuilder.append("Report continued:");
+                            stringBuilder.append("\n")
+                            .append("\n");
+                        }
+                    }
+                    else
+                    {
+                        stringBuilder.append("\n");
+                        messageChannel.createMessage(stringBuilder.toString()).subscribe();
                     }
                 }
-                else
-                {
-                    stringBuilder.append("\n");
-                    messageChannel.createMessage(stringBuilder.toString()).subscribe();
-                }
             }
+        }
+        catch (RuntimeException e)
+        {
+            messageChannel.createMessage(e.getMessage()).subscribe();
+            return Mono.empty();
         }
         return Mono.empty();
     }
@@ -115,7 +128,14 @@ class EmojiReportCommand implements ServerCommand
         //shortcut for me
         else if("me".equalsIgnoreCase(submittedUser))
         {
-            return originalMessage.getAuthor().orElseThrow(() -> new RuntimeException("Could not get message author.")).getUsername().toLowerCase();
+            if (originalMessage.getAuthor().isPresent())
+            {
+                return originalMessage.getAuthor().get().getUsername().toLowerCase();
+            }
+            else
+            {
+                return "unknown";
+            }
         }
         else if ("global".equalsIgnoreCase(submittedUser))
         {
@@ -131,7 +151,7 @@ class EmojiReportCommand implements ServerCommand
             return memberSet.stream().map(Member::getUsername)
                     .filter(username -> username.equalsIgnoreCase(submittedUser))
                     .findAny()
-                    .orElseThrow(() -> new RuntimeException("Could not find a member to query by based on the the input " + submittedUser))
+                    .orElse("unknown")
                     .toLowerCase();
         }
     }
