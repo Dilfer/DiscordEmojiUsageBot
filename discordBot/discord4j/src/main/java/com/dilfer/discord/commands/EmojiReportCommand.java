@@ -35,11 +35,12 @@ class EmojiReportCommand implements ServerCommand
             String messageContents = message.getContent().orElse("");
             String submittedUser = messageContents.replace(commandString, "").trim();
 
-            String userToUseForReportRequest = determineProperUser(submittedUser, message, guild);
+            Optional<User> optional = message.getAuthor();
+            String userToUseForReportRequest = determineProperUser(submittedUser, guild, optional);
 
             if ("unknown".equalsIgnoreCase(userToUseForReportRequest))
             {
-                messageChannel.createMessage("Invalid input. Did not like argument " + submittedUser).subscribe();
+                messageChannel.createMessage(String.format("Smarten the fuck up %s and read the help command. %s was not a valid input.", optional.map(user -> user.getUsername().toLowerCase()).orElse("unknown"), submittedUser)).subscribe();
                 return Mono.empty();
             }
 
@@ -61,6 +62,10 @@ class EmojiReportCommand implements ServerCommand
                             Collectors.mapping(emojiStat -> convertToDiscordFriendlyStringWithSnowflake(guildEmojis.get(emojiStat.getEmojiTextKey()), emojiStat),
                                     Collectors.toList())));
 
+            int totalEmojisUsed = emojiListByCount.entrySet().stream()
+                    .mapToInt(entry -> entry.getKey() * entry.getValue().size())
+                    .sum();
+
             List<String> reportLines = emojiListByCount.entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
@@ -73,6 +78,9 @@ class EmojiReportCommand implements ServerCommand
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Emoji Report for ")
                         .append(userToUseForReportRequest)
+                        .append("\n")
+                        .append("Total Number of Emojis Used: ")
+                        .append(totalEmojisUsed)
                         .append("\n")
                         .append("\n");
 
@@ -108,7 +116,7 @@ class EmojiReportCommand implements ServerCommand
         return Mono.empty();
     }
 
-    private String determineProperUser(final String submittedUser, Message originalMessage, Guild guild)
+    private String determineProperUser(final String submittedUser, Guild guild, Optional<User> author)
     {
         Set<Member> memberSet = new HashSet<>(Objects.requireNonNull(guild.getMembers().collectList().block()));
         Map<String, String> memberNamesByNickname = memberSet
@@ -128,14 +136,7 @@ class EmojiReportCommand implements ServerCommand
         //shortcut for me
         else if("me".equalsIgnoreCase(submittedUser))
         {
-            if (originalMessage.getAuthor().isPresent())
-            {
-                return originalMessage.getAuthor().get().getUsername().toLowerCase();
-            }
-            else
-            {
-                return "unknown";
-            }
+            return author.map(user -> user.getUsername().toLowerCase()).orElse("unknown");
         }
         else if ("global".equalsIgnoreCase(submittedUser))
         {
