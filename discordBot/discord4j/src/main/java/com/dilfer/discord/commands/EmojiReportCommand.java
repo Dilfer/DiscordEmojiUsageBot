@@ -1,5 +1,6 @@
 package com.dilfer.discord.commands;
 
+import com.amazonaws.util.StringUtils;
 import com.dilfer.discord.DiscordBotApi;
 import com.dilfer.discord.model.EmojiStats;
 import com.dilfer.discord.model.GetEmojiReportUsernameRequest;
@@ -138,7 +139,7 @@ class EmojiReportCommand implements ServerCommand
         {
             return author.map(user -> user.getUsername().toLowerCase()).orElse("unknown");
         }
-        else if ("global".equalsIgnoreCase(submittedUser))
+        else if ("global".equalsIgnoreCase(submittedUser) || StringUtils.isNullOrEmpty(submittedUser))
         {
             return "global";
         }

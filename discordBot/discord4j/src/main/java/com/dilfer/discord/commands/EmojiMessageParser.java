@@ -15,8 +15,7 @@ public class EmojiMessageParser
 {
     public static final Pattern customEmojiPattern = Pattern.compile("(<:[A-Za-z0-9]*:[0-9]*>)");
 
-    public List<EmojiUpdate> getEmojiUpdates(Message message,
-                                             User discordBotUser)
+    public List<String> getEmojiStrings(Message message)
     {
         Matcher matcher = customEmojiPattern.matcher(message.getContent().orElse(""));
 
@@ -25,6 +24,14 @@ public class EmojiMessageParser
         {
             matches.add(matcher.group());
         }
+
+        return matches;
+    }
+
+    public List<EmojiUpdate> getEmojiUpdates(Message message,
+                                             User discordBotUser)
+    {
+        List<String> matches = getEmojiStrings(message);
 
 
         Map<String, Long> collect = matches.stream()
@@ -37,20 +44,6 @@ public class EmojiMessageParser
                         .emojiTextKey(entry.getKey())
                         .discordUser(message.getAuthor().orElse(discordBotUser).getUsername()))
                 .collect(Collectors.toList());
-    }
-
-    public Map<String, Long> getEmojiCountMap(String message)
-    {
-        Matcher matcher = customEmojiPattern.matcher(message);
-
-        List<String> matches = new ArrayList<>();
-        while (matcher.find())
-        {
-            matches.add(matcher.group());
-        }
-
-        return matches.stream()
-                .collect(Collectors.groupingBy(this::getEmojiTextFromWeirdDiscordString, Collectors.counting()));
     }
 
     private String getEmojiTextFromWeirdDiscordString(String discordEmojiString)
