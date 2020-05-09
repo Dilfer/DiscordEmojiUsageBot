@@ -194,7 +194,7 @@ class EmojiReportCommand implements ServerCommand
                     .append("\t")
                     .append("\t");
             stringBuilder.append(entrySet.getKey().toString())
-                    .append(" times :");
+                    .append(" times : ");
             partitionedEmojiList.forEach(stringBuilder::append);
             stringBuilder.append("\n");
             returnStrings.add(stringBuilder.toString());

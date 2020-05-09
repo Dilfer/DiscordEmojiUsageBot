@@ -94,6 +94,15 @@ public class EmojiLeaderboardCommand implements ServerCommand
                 .append("\n")
                 .append("\n");
 
+        int totalTimesUsed = userEmojiCounts.stream()
+                .mapToInt(UserEmojiCounts::getNumEmojisUsed)
+                .sum();
+
+        stringBuilder
+                .append("Total Number of Emojis Used: ")
+                .append(totalTimesUsed)
+                .append("\n");
+
         for (int i = 0; i < userEmojiCounts.size(); i++)
         {
             UserEmojiCounts userEmojiCount = userEmojiCounts.get(i);
@@ -124,16 +133,19 @@ public class EmojiLeaderboardCommand implements ServerCommand
                 .sorted(Comparator.comparing(emojiCount -> emojiCount.getNumTimesSpecificEmojiUsed(specificEmoji), Comparator.reverseOrder()))
                 .collect(Collectors.toList());
 
+        int totalTimesUsed = peopleWhoHaveUsedEmoji.stream()
+                .mapToInt(emojiCount -> emojiCount.getNumTimesSpecificEmojiUsed(specificEmoji))
+                .sum();
+
+        stringBuilder
+                .append("Total Number of Times Used: ")
+                .append(totalTimesUsed)
+                .append("\n");
+
         for (int i = 0; i < peopleWhoHaveUsedEmoji.size(); i++)
         {
             UserEmojiCounts userEmojiCount = peopleWhoHaveUsedEmoji.get(i);
             stringBuilder.append(String.format("%d. %s : %d", i + 1, userEmojiCount.user, userEmojiCount.getNumTimesSpecificEmojiUsed(specificEmoji)));
-
-            if (userEmojiCount.numEmojisUsed == 0)
-            {
-                stringBuilder.append("  Get a load of this fucking n00b here.");
-            }
-
             stringBuilder.append("\n");
         }
 
